@@ -1,4 +1,4 @@
-/* Copyright (C) 2018-2020 The Manyverse Authors.
+/* Copyright (C) 2018-2021 The Manyverse Authors.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -13,7 +13,7 @@ import {
   AboutContent,
   BlobId,
 } from 'ssb-typescript';
-const nodejs = require('nodejs-mobile-react-native');
+//const nodejs = require('nodejs-mobile-react-native');
 import {Platform} from 'react-native';
 import xsFromCallback from 'xstream-from-callback';
 import runAsync = require('promisify-tuple');
@@ -275,11 +275,11 @@ export class SSBSource {
     return xs.create<RestoreIdentityResponse>({
       start(listener: Listener<RestoreIdentityResponse>) {
         this.fn = (msg: RestoreIdentityResponse) => listener.next(msg);
-        nodejs.channel.addListener('identity', this.fn);
-        nodejs.channel.post('identity', `RESTORE: ${inputWords}`);
+        //nodejs.channel.addListener('identity', this.fn);
+        //nodejs.channel.post('identity', `RESTORE: ${inputWords}`);
       },
       stop() {
-        nodejs.channel.removeListener('identity', this.fn);
+        //nodejs.channel.removeListener('identity', this.fn);
       },
     });
   }
@@ -465,12 +465,12 @@ async function consumeSink(
     .take(1)
     .addListener({
       next(r) {
-        if (r.type === 'identity.create') {
-          nodejs.channel.post('identity', 'CREATE');
-        }
-        if (r.type === 'identity.use') {
-          nodejs.channel.post('identity', 'USE');
-        }
+        // if (r.type === 'identity.create') {
+        //   nodejs.channel.post('identity', 'CREATE');
+        // }
+        // if (r.type === 'identity.use') {
+        //   nodejs.channel.post('identity', 'USE');
+        // }
       },
     });
 
@@ -675,16 +675,16 @@ async function consumeSink(
   });
 }
 
-function waitForIdentity() {
-  return new Promise<boolean>((resolve) => {
-    nodejs.channel.addListener('identity', (msg: RestoreIdentityResponse) => {
-      if (msg === 'IDENTITY_READY') resolve(true);
-    });
-  });
-}
+// function waitForIdentity() {
+//   return new Promise<boolean>((resolve) => {
+//     nodejs.channel.addListener('identity', (msg: RestoreIdentityResponse) => {
+//       if (msg === 'IDENTITY_READY') resolve(true);
+//     });
+//   });
+// }
 
 export function ssbDriver(sink: Stream<Req>): SSBSource {
-  const ssbP = waitForIdentity().then(makeClient);
+  const ssbP = makeClient(); // waitForIdentity().then(makeClient);
   const source = new SSBSource(ssbP);
   consumeSink(sink, source, ssbP);
   return source;
