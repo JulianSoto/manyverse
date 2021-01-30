@@ -1,4 +1,4 @@
-/* Copyright (C) 2018-2020 The Manyverse Authors.
+/* Copyright (C) 2018-2021 The Manyverse Authors.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,7 +7,7 @@
 import os = require('os');
 import path = require('path');
 import fs = require('fs');
-import {BrowserWindow, app, WebContents} from 'electron';
+const {BrowserWindow, app, WebContents} = require('electron');
 
 process.env = process.env ?? {};
 
@@ -22,9 +22,9 @@ process.env.MANYVERSE_PLATFORM = 'desktop';
 process.env.DEBUG = '*';
 // }
 
-let win: BrowserWindow | null;
+let win: typeof BrowserWindow | null;
 
-let resolveWebContents: ((wc: WebContents) => void) | undefined;
+let resolveWebContents: ((wc: typeof WebContents) => void) | undefined;
 // This will be used by multiserver to communicate with the frontend
 (process as any).webContentsP = new Promise((resolve) => {
   resolveWebContents = resolve;
